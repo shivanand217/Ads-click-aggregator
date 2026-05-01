@@ -61,6 +61,26 @@ services:
       timeout: 5s
       retries: 5
 
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3
+    hostname: clickhouse
+    container_name: clickhouse
+    ports:
+      - "8123:8123"   # HTTP interface — used by JDBC driver
+      - "9000:9000"   # Native TCP interface
+    environment:
+      CLICKHOUSE_DB: clickagg
+      CLICKHOUSE_USER: clickagg
+      CLICKHOUSE_PASSWORD: clickagg
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    volumes:
+      - ./infrastructure/clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui

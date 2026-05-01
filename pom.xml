@@ -23,12 +23,16 @@
 
     <modules>
         <module>click-processor</module>
-        <!--        <module>flink-aggregation</module>-->
+        <module>flink-aggregation</module>
         <!--        <module>analytics-service</module>-->
     </modules>
 
     <properties>
         <java.version>21</java.version>
+        <flink.version>1.19.1</flink.version>
+        <flink.kafka.connector.version>3.2.0-1.19</flink.kafka.connector.version>
+        <flink.jdbc.connector.version>3.2.0-1.19</flink.jdbc.connector.version>
+        <clickhouse.jdbc.version>0.6.3</clickhouse.jdbc.version>
 
         <!-- Avro 1.12.0 fixes CVE-2024-47561 (deserialization) and CVE-2025-33042 -->
         <avro.version>1.12.0</avro.version>
