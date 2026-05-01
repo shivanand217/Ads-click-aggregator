@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: click-processor
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      acks: all
+      retries: 3
+      properties:
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 100ms
+      connect-timeout: 500ms
+
+server:
+  port: 8080
+
+# Resilience4j Circuit Breaker for Redis idempotency check
+resilience4j:
+  circuitbreaker:
+    instances:
+      redis-idempotency:
+        register-health-indicator: true
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 5s
+        failure-rate-threshold: 50
+        event-consumer-buffer-size: 10
+
+# App-level config
+clickprocessor:
+  kafka:
+    topic:
+      raw-clicks: raw-clicks
+      partitions: 1           # 1 for local dev; 64 for production
+      replication-factor: 1   # 1 for local dev; 3 for production
+  idempotency:
+    ttl-hours: 24
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.clickagg: DEBUG
