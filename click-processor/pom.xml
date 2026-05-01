@@ -43,9 +43,19 @@
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
             <exclusions>
+                <!-- Conflicts with logback SLF4J binding -->
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <!--
+                    commons-beanutils 1.9.4 has CVE-2025-48734.
+                    Excluded here; consumed through the managed 2.x line if/when available.
+                    Re-evaluate when confluent ships a fix.
+                -->
+                <exclusion>
+                    <groupId>commons-beanutils</groupId>
+                    <artifactId>commons-beanutils</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -144,10 +154,5 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>confluent</id>
-            <url>https://packages.confluent.io/maven/</url>
-        </repository>
-    </repositories>
+    <!-- Confluent repo inherited from parent pom -->
 </project>

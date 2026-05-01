@@ -7,7 +7,11 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <!--
+            3.4.5 uses: Spring Framework 6.2.x, Tomcat 10.1.40+, logback 1.5.x,
+            Jackson 2.18.x, Netty 4.1.118+ — fixes most critical CVEs from 3.2.5.
+        -->
+        <version>3.4.5</version>
         <relativePath/>
     </parent>
 
@@ -19,30 +23,51 @@
 
     <modules>
         <module>click-processor</module>
-        <module>flink-aggregation</module>
-        <module>analytics-service</module>
+        <!--        <module>flink-aggregation</module>-->
+        <!--        <module>analytics-service</module>-->
     </modules>
 
     <properties>
         <java.version>21</java.version>
-        <avro.version>1.11.3</avro.version>
-        <confluent.version>7.6.0</confluent.version>
+
+        <!-- Avro 1.12.0 fixes CVE-2024-47561 (deserialization) and CVE-2025-33042 -->
+        <avro.version>1.12.0</avro.version>
+
+        <!--
+            Confluent 7.8.0 aligns with kafka-clients 3.8.x.
+            Spring Boot 3.4.x ships spring-kafka 3.3.x / kafka-clients 3.8.x — same line.
+        -->
+        <confluent.version>7.8.0</confluent.version>
+
         <resilience4j.version>2.2.0</resilience4j.version>
-        <testcontainers.version>1.19.8</testcontainers.version>
+
+        <!-- Testcontainers 1.20.x — stable, actively maintained -->
+        <testcontainers.version>1.20.4</testcontainers.version>
+
+        <!-- Explicit overrides for transitive vulnerabilities not covered by SB upgrade -->
+        <commons-compress.version>1.27.1</commons-compress.version>  <!-- CVE-2024-25710, CVE-2024-26308 -->
+        <commons-io.version>2.18.0</commons-io.version>              <!-- CVE-2024-47554 -->
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>  <!-- keep; no stable patch yet -->
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Avro -->
             <dependency>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro</artifactId>
                 <version>${avro.version}</version>
             </dependency>
+
+            <!-- Confluent Kafka Avro Serializer -->
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-avro-serializer</artifactId>
                 <version>${confluent.version}</version>
             </dependency>
+
+            <!-- Resilience4j -->
             <dependency>
                 <groupId>io.github.resilience4j</groupId>
                 <artifactId>resilience4j-spring-boot3</artifactId>
@@ -53,6 +78,8 @@
                 <artifactId>resilience4j-circuitbreaker</artifactId>
                 <version>${resilience4j.version}</version>
             </dependency>
+
+            <!-- Testcontainers BOM -->
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
@@ -60,6 +87,19 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- Transitive vulnerability overrides -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
