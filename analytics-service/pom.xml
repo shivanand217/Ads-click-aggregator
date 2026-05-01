@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.clickagg</groupId>
+        <artifactId>ad-click-aggregator</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>analytics-service</artifactId>
+    <name>Analytics Service — Phase 3 (TODO)</name>
+
+    <!--
+        Phase 3: Advertiser-facing analytics REST API.
+        Queries ClickHouse clicks_1min/clicks_hourly/clicks_daily tables.
+        Redis caches hot queries with 30-second TTL.
+        Spring Boot service with JWT auth.
+    -->
+</project>

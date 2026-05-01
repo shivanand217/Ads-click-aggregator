@@ -43,7 +43,7 @@ clickprocessor:
   kafka:
     topic:
       raw-clicks: raw-clicks
-      partitions: 1           # 1 for local dev; 64 for production
+      partitions: 8          # 1 for local dev; 64 for production
       replication-factor: 1   # 1 for local dev; 3 for production
   idempotency:
     ttl-hours: 24
