@@ -1,0 +1,22 @@
+spring:
+  kafka:
+    producer:
+      # Use String serializer in tests — no Schema Registry needed
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    properties:
+      schema.registry.url: mock://test-scope
+
+  data:
+    redis:
+      # Overridden by Testcontainers dynamic port in integration tests
+      host: localhost
+      port: 6379
+
+clickprocessor:
+  kafka:
+    topic:
+      raw-clicks: raw-clicks-test
+      partitions: 1
+      replication-factor: 1
+  idempotency:
+    ttl-hours: 1
