@@ -1,0 +1,65 @@
+{
+  "namespace": "com.clickagg.schema",
+  "type": "record",
+  "name": "ClickEvent",
+  "doc": "Represents a single ad click event published to Kafka",
+  "fields": [
+    {
+      "name": "clickId",
+      "type": "string",
+      "doc": "Globally unique click identifier (UUID v4). Used for idempotency across all layers."
+    },
+    {
+      "name": "adId",
+      "type": "string",
+      "doc": "The ad that was clicked. Used as Kafka partition key."
+    },
+    {
+      "name": "advertiserId",
+      "type": "string",
+      "doc": "Advertiser who owns the ad. Denormalized here to avoid joins in Flink."
+    },
+    {
+      "name": "placementId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "The ad slot placement where the click originated."
+    },
+    {
+      "name": "sessionId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Browser session identifier. Used by Flink HyperLogLog for unique session count."
+    },
+    {
+      "name": "hashedIpAddress",
+      "type": "string",
+      "doc": "SHA-256 hash of the raw IP address. Raw IP is never stored."
+    },
+    {
+      "name": "userAgent",
+      "type": "string",
+      "doc": "Raw User-Agent string from the HTTP request."
+    },
+    {
+      "name": "country",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "ISO 3166-1 alpha-2 country code resolved from IP via GeoIP."
+    },
+    {
+      "name": "deviceType",
+      "type": {
+        "type": "enum",
+        "name": "DeviceType",
+        "symbols": ["DESKTOP", "MOBILE", "TABLET", "UNKNOWN"]
+      },
+      "doc": "Device type detected from User-Agent."
+    },
+    {
+      "name": "timestampMs",
+      "type": "long",
+      "doc": "Event time in epoch milliseconds. Used as Flink event-time watermark source."
+    }
+  ]
+}
